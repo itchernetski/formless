@@ -14,7 +14,9 @@
     "typecheck": "npm --prefix extension run typecheck",
     "test": "npm --prefix extension test",
     "package": "npm --prefix extension run build && node scripts/package.mjs",
-    "e2e": "node tests/e2e-extension.mjs"
+    "e2e": "node tests/e2e-extension.mjs",
+    "shots": "node scripts/screenshots.mjs",
+    "store-shots": "npm run shots && node scripts/store-shots.mjs"
   },
   "devDependencies": {
     "playwright": "^1.61.1"

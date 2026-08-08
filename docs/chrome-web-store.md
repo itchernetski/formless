@@ -48,7 +48,7 @@ Verify it loads in a private window before pasting it into the dashboard.
 
 - [ ] Manual walkthrough in a real Chrome — the checklist in [`oss-release.md` §3](oss-release.md). A listing rejected for a broken feature costs days; five minutes of clicking costs five minutes.
 - [x] Support contact is `tchernetski@gmail.com` — a real inbox, and the address to put in the dashboard's contact field
-- [ ] Four composed 1280×800 screenshots — see [§3](#3-graphic-assets)
+- [x] Four composed 1280×800 screenshots — `npm run store-shots`, see [§3](#3-graphic-assets)
 - [ ] The GitHub repo is **public**, because the listing links to it and reviewers will open it
 - [x] `npm run package` produces `release/formless-0.1.0-chrome.zip` (plus the edge and firefox zips)
 
@@ -100,18 +100,28 @@ The dashboard parses the manifest and creates a draft. Version, name and descrip
 
 Screenshots are the listing. Most people decide from the first one.
 
-Formless's own pages are already captured at 2× by `node scripts/screenshots.mjs` → `docs/assets/`. They are **raw UI, not store-ready**: you need to place each on a 1280×800 canvas with a caption. Any of Figma, Keynote, or a throwaway HTML page will do — the landing page's visual language (white background, `#2563eb` accent, system-ui) already works as the frame.
+All four are generated. One command:
 
-Planned set, in order:
+```bash
+npm run store-shots     # → release/store/01-fill.png … 04-import.png
+```
 
-1. **Popup over a real application form** — `docs/assets/popup.png` composited over a Greenhouse/Lever page. Caption: *"One click. Every field."*
-2. **AI panel mid-stream** — needs hand capture from a live install. Caption: *"Cover letters written on your device."*
-3. **Settings with encryption on** — crop of `docs/assets/options.png`. Caption: *"Your profile. Your machine. Encrypted."*
-4. **Import review diff** — needs hand capture. Caption: *"Import your CV. Approve every field."*
+That runs `scripts/screenshots.mjs` (raw UI at 2× into `docs/assets/`) and then `scripts/store-shots.mjs`, which lays each capture on a 1280×800 canvas in the landing page's visual language and verifies the output is exactly 1280×800 with no transparent pixel — the two things the uploader rejects silently.
 
-Items 2 and 4 require the extension actually running, which the screenshot script can't fake. Capture them during the §0.3 walkthrough so you only load the extension once.
+The set, in order:
 
-**Don't** put a browser chrome mockup around them, don't add "Download now" badges, and don't include text that promises anything the extension doesn't do — all three are common rejection or takedown triggers.
+| # | File | Shows | Caption |
+|---|---|---|---|
+| 1 | `01-fill.png` | filled form + popup + "Filled 10 fields" toast | *One click. Every field.* |
+| 2 | `02-ai.png` | AI panel mid-stream drafting a cover letter | *Cover letters written on your device.* |
+| 3 | `03-encrypted.png` | whitelist populated, vault encrypted | *Your profile. Your machine. Encrypted.* |
+| 4 | `04-import.png` | review modal, new/update/unchanged per field | *Nothing saves itself. You approve every field.* |
+
+Nothing here is staged. The scenes drive the **real** content script against `scripts/fixtures/job-application.html`: shot 1 runs the actual fill (and reports what it filled, failing if that's zero), shot 2 opens the genuine AI panel against a stubbed Prompt API and asserts the panel is pinned to the viewport, shot 3 clicks through the real "Enable encryption" button so the ✓ state is earned, and shot 4 comes through the real pending-capture handoff.
+
+The fixture is a **neutral** application page, not a capture of Greenhouse or Lever. Putting a third party's trademark in your own store artwork invites a takedown after publication, which is worse than a rejection before it.
+
+**Don't** put a browser chrome mockup around them, don't add "Download now" badges, and don't include text that promises anything the extension doesn't do — all three are common rejection or takedown triggers. Caption 4 is worded the way it is for exactly this reason: the frame shows the capture flow, so it doesn't claim to show a CV import.
 
 ---
 
