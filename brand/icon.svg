@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <!-- Formless mark: two filled form lines + an AI spark. Legible down to 16px. -->
+  <rect width="128" height="128" rx="28" fill="#2563eb"/>
+  <g fill="#ffffff">
+    <rect x="26" y="40" width="76" height="13" rx="6.5"/>
+    <rect x="26" y="66" width="47" height="13" rx="6.5"/>
+    <!-- 4-point spark, bottom-right -->
+    <path d="M92 62 q3.2 12.8 16 16 q-12.8 3.2 -16 16 q-3.2 -12.8 -16 -16 q12.8 -3.2 16 -16 z"/>
+  </g>
+</svg>

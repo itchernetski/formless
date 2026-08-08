@@ -1,0 +1,43 @@
+name: Feature request
+description: Suggest something Formless should do.
+title: "[feature] "
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Two things Formless will not do, so you don't spend time writing them up:
+        submit forms for you, and work around CAPTCHAs or bot detection.
+        Anything that requires sending your data to a server is opt-in-only territory.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What's the problem
+      description: Describe the situation you're in, not the feature. What are you doing when this bites?
+      placeholder: I apply to 15 jobs a week and re-type my visa status on every single one…
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What you'd like instead
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you've considered
+  - type: checkboxes
+    id: constraints
+    attributes:
+      label: Does it fit the project?
+      options:
+        - label: This works without sending data off the device (or is clearly opt-in).
+        - label: This doesn't involve auto-submitting forms or bypassing anti-bot measures.
+          required: true
+  - type: checkboxes
+    id: help
+    attributes:
+      label: Contribution
+      options:
+        - label: I'd be up for implementing this myself.

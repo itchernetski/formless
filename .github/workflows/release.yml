@@ -1,0 +1,45 @@
+name: Release
+
+# Tag a release (git tag v0.1.0 && git push --tags) to build the store zips and
+# attach them to a GitHub release. Store submission stays manual on purpose —
+# review queues and listing copy want a human.
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: extension/package-lock.json
+      - run: npm ci
+        working-directory: extension
+      - run: npm run lint
+        working-directory: extension
+      - run: npm run typecheck
+        working-directory: extension
+      - run: npm test
+        working-directory: extension
+      - run: npm run build
+        working-directory: extension
+      - run: node scripts/package.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: formless-zips
+          path: release/*.zip
+      - name: Attach zips to the release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release/*.zip
+          generate_release_notes: true

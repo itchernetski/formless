@@ -1,0 +1,73 @@
+name: Bug report
+description: Something in the extension itself is broken — UI, vault, import, AI panel.
+title: "[bug] "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For a form filling incorrectly on a particular site, use **Site not working** instead.
+
+        Never paste your master password, profile export, or any real personal data into an issue.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open Settings
+        2. Click Import from CV
+        3. …
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Which part
+      options:
+        - Popup
+        - Settings / profile editor
+        - Onboarding
+        - Help page
+        - CV or LinkedIn import
+        - Save filled fields (capture)
+        - AI generation panel
+        - Encryption / unlock
+        - Backup export / import
+        - Build or packaging
+        - Not sure
+    validations:
+      required: true
+  - type: textarea
+    id: console
+    attributes:
+      label: Console errors
+      description: |
+        Popup: right-click the icon → Inspect popup. Service worker: chrome://extensions → Service worker.
+        Content script: the page's own DevTools console.
+      render: shell
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and version
+      placeholder: Chrome 141 on macOS 15
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Formless version
+      placeholder: 0.1.0
+    validations:
+      required: true

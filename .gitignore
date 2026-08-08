@@ -1,0 +1,16 @@
+node_modules/
+dist/
+release/
+brand/dist/
+
+# Local tool config, not part of the project
+.claude/settings.local.json
+.vscode/
+.idea/
+*.log
+.DS_Store
+.env
+.env.local
+.vite/
+coverage/
+*.zip

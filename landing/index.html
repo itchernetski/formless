@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Formless — form autofill with on-device AI</title>
+<meta name="description" content="Fill any form from a local, encrypted profile and draft cover letters with the AI built into your browser. Zero network requests. Open source, MIT." />
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml" />
+
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Formless — form autofill with on-device AI" />
+<meta property="og:description" content="Fill any form from a local, encrypted profile and draft the long answers on-device. Zero network requests." />
+<meta property="og:image" content="assets/popup.png" />
+<meta name="twitter:card" content="summary_large_image" />
+
+<style>
+  :root {
+    --bg: #ffffff;
+    --fg: #111827;
+    --muted: #5b6472;
+    --border: #e5e7eb;
+    --accent: #2563eb;
+    --ink: #0b1020;
+    --wash: #f7f8fa;
+    --max: 1080px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    color: var(--fg);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.6;
+  }
+  a { color: var(--accent); }
+  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 24px; }
+
+  /* Header */
+  header { border-bottom: 1px solid var(--border); position: sticky; top: 0; background: rgba(255,255,255,.86); backdrop-filter: blur(8px); z-index: 10; }
+  header .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; gap: 16px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 17px; letter-spacing: -.3px; text-decoration: none; color: var(--fg); }
+  .brand img { width: 28px; height: 28px; border-radius: 7px; }
+  nav { display: flex; align-items: center; gap: 20px; font-size: 14px; }
+  nav a { color: var(--muted); text-decoration: none; }
+  nav a:hover { color: var(--fg); }
+  .btn {
+    display: inline-block; text-decoration: none; font-weight: 600; font-size: 15px;
+    padding: 11px 18px; border-radius: 10px; border: 1px solid var(--border);
+    background: #fff; color: var(--fg); white-space: nowrap;
+  }
+  .btn:hover { background: var(--wash); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn.primary:hover { filter: brightness(1.07); }
+  .btn.sm { padding: 8px 14px; font-size: 14px; }
+
+  /* Hero */
+  .hero { padding: 84px 0 40px; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600;
+    color: var(--accent); background: #eef2ff; border-radius: 999px; padding: 5px 13px; margin-bottom: 22px;
+  }
+  h1 {
+    font-size: clamp(38px, 6.2vw, 62px); line-height: 1.04; letter-spacing: -2px;
+    margin: 0 0 20px; max-width: 15ch; font-weight: 800;
+  }
+  h1 em { font-style: normal; color: var(--accent); }
+  .lede { font-size: clamp(17px, 2.2vw, 21px); color: var(--muted); max-width: 56ch; margin: 0 0 30px; }
+  .cta { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  .cta .note { font-size: 13px; color: var(--muted); }
+
+  .shot {
+    margin-top: 56px; display: grid; grid-template-columns: 340px 1fr; gap: 28px; align-items: end;
+  }
+  .shot img:first-child {
+    width: 100%; border-radius: 14px; border: 1px solid var(--border);
+    box-shadow: 0 24px 60px -24px rgba(11,16,32,.28);
+  }
+  .shot .caption { padding-bottom: 12px; }
+  .shot .caption p { color: var(--muted); font-size: 15px; margin: 0 0 10px; }
+  .shot .caption strong { color: var(--fg); }
+  @media (max-width: 780px) { .shot { grid-template-columns: 1fr; } .shot .caption { padding: 0; } }
+
+  /* Proof strip */
+  .proof { background: var(--ink); color: #e8ecf4; margin-top: 72px; padding: 54px 0; }
+  .proof h2 { font-size: clamp(24px, 3.4vw, 34px); letter-spacing: -.8px; margin: 0 0 12px; color: #fff; }
+  .proof p { color: #9aa6bd; max-width: 62ch; margin: 0; }
+  .proof .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 28px; margin-top: 38px; }
+  .proof .m .n { font-size: 30px; font-weight: 800; color: #fff; letter-spacing: -1px; }
+  .proof .m .l { font-size: 13.5px; color: #9aa6bd; margin-top: 2px; }
+  code.k { background: #1b2338; color: #cbd5e5; padding: 2px 7px; border-radius: 5px; font-size: 13px; }
+
+  /* Sections */
+  section { padding: 76px 0; }
+  .sec-head { max-width: 60ch; margin-bottom: 40px; }
+  h2 { font-size: clamp(26px, 3.6vw, 38px); letter-spacing: -1px; line-height: 1.15; margin: 0 0 12px; font-weight: 800; }
+  .sec-head p { color: var(--muted); font-size: 17px; margin: 0; }
+
+  .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+  .f { background: #fff; padding: 26px 24px; }
+  .f h3 { font-size: 16px; margin: 0 0 8px; letter-spacing: -.2px; }
+  .f p { margin: 0; color: var(--muted); font-size: 15px; }
+  .f .ic { font-size: 20px; line-height: 1; margin-bottom: 14px; display: block; }
+
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+  /* Screenshots are captured full-page, so crop to a readable window. */
+  .split img {
+    width: 100%; max-height: 540px; object-fit: cover; object-position: top center;
+    border-radius: 14px; border: 1px solid var(--border);
+    box-shadow: 0 20px 50px -26px rgba(11,16,32,.25);
+  }
+  @media (max-width: 860px) { .split { grid-template-columns: 1fr; gap: 32px; } }
+  ul.ticks { list-style: none; padding: 0; margin: 20px 0 0; }
+  ul.ticks li { padding-left: 28px; position: relative; margin-bottom: 12px; color: var(--muted); }
+  ul.ticks li::before { content: "✓"; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+  ul.ticks li strong { color: var(--fg); }
+
+  .wont { background: var(--wash); border-radius: 16px; padding: 34px; border: 1px solid var(--border); }
+  .wont h3 { margin: 0 0 14px; font-size: 18px; }
+  .wont p { margin: 0 0 10px; color: var(--muted); }
+  .wont p:last-child { margin: 0; }
+
+  details.faq { border-top: 1px solid var(--border); padding: 18px 0; }
+  details.faq summary { cursor: pointer; font-weight: 600; font-size: 16.5px; }
+  details.faq p { color: var(--muted); margin: 12px 0 0; max-width: 72ch; }
+
+  .install { background: var(--wash); border: 1px solid var(--border); border-radius: 16px; padding: 30px; }
+  pre { background: var(--ink); color: #e8ecf4; padding: 18px 20px; border-radius: 11px; overflow-x: auto; font-size: 13.5px; line-height: 1.7; margin: 16px 0; }
+  pre .c { color: #7c8aa5; }
+
+  footer { border-top: 1px solid var(--border); padding: 44px 0; color: var(--muted); font-size: 14px; }
+  footer .wrap { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; align-items: center; }
+  footer nav { gap: 18px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="brand" href="#top"><img src="assets/icon.svg" alt="" /> Formless</a>
+    <nav>
+      <a href="#features">Features</a>
+      <a href="#privacy">Privacy</a>
+      <a href="#install">Install</a>
+      <a href="https://github.com/itchernetski/formless">GitHub</a>
+      <a class="btn primary sm" href="#install">Get it free</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <div class="hero wrap">
+    <span class="eyebrow">Open source · MIT · Zero network requests</span>
+    <h1>Autofill that also writes the <em>hard part</em>.</h1>
+    <p class="lede">
+      Formless fills forms from a profile that lives on your device — and drafts the cover
+      letters, the “why this company”, the “tell us about yourself” using the AI already
+      built into your browser. No account. No server. Nothing leaves your machine.
+    </p>
+    <div class="cta">
+      <a class="btn primary" href="#install">Install free</a>
+      <a class="btn" href="https://github.com/itchernetski/formless">Read the source</a>
+      <span class="note">Chrome · Edge · Brave</span>
+    </div>
+
+    <div class="shot">
+      <img src="assets/popup.png" alt="The Formless popup: profile switcher, fill, AI generation and capture buttons" />
+      <div class="caption">
+        <p><strong>One panel, four moves.</strong> Fill the form. Generate the long answers.
+        Save what you typed by hand for next time. Switch profiles without leaving the popup.</p>
+        <p>No dashboard to learn, because there's nothing to configure on a server.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="proof">
+    <div class="wrap">
+      <h2>“Privacy-first” usually means analytics you can't see.</h2>
+      <p>
+        Formless makes no network requests at all. Open DevTools, watch the Network tab, and use it —
+        the tab stays empty. There is no backend to talk to, no key to leak, and no telemetry
+        endpoint quietly counting your keystrokes.
+      </p>
+      <div class="metrics">
+        <div class="m"><div class="n">0</div><div class="l">network requests</div></div>
+        <div class="m"><div class="n">0</div><div class="l">accounts, ever</div></div>
+        <div class="m"><div class="n">AES-GCM</div><div class="l">vault encryption at rest</div></div>
+        <div class="m"><div class="n">210k</div><div class="l">PBKDF2 iterations</div></div>
+      </div>
+    </div>
+  </div>
+
+  <section id="features" class="wrap">
+    <div class="sec-head">
+      <h2>Built for the forms that actually waste your time</h2>
+      <p>Job applications, visa paperwork, checkouts, conference sign-ups — the same forty fields, forever.</p>
+    </div>
+    <div class="features">
+      <div class="f">
+        <span class="ic">🎯</span>
+        <h3>Detection that survives real sites</h3>
+        <p>Reads how each field describes itself — <code class="k">autocomplete</code>, labels, aria-labels, names — and scores candidates instead of guessing by position. React and Vue controlled inputs, selects, radios, dates, shadow DOM.</p>
+      </div>
+      <div class="f">
+        <span class="ic">✨</span>
+        <h3>Cover letters, on-device</h3>
+        <p>Reads the job title, company and description off the page, then drafts from your CV with Chrome's built-in Gemini Nano. Pick tone and length, edit the draft, insert when you're happy.</p>
+      </div>
+      <div class="f">
+        <span class="ic">📄</span>
+        <h3>Profile in a minute</h3>
+        <p>Import a CV as PDF — parsed locally, structured by the on-device model — or drop in your LinkedIn data export. You approve every field before it's saved.</p>
+      </div>
+      <div class="f">
+        <span class="ic">🧠</span>
+        <h3>It learns from you</h3>
+        <p>Fill a form by hand once, click <em>Save filled fields to profile</em>, and Formless maps what you typed back into your profile. Passwords, card numbers, CVV, OTP, PIN and SSN are never captured.</p>
+      </div>
+      <div class="f">
+        <span class="ic">👥</span>
+        <h3>Several identities</h3>
+        <p>Personal, work, one per role — switch straight from the popup. Each profile keeps its own data.</p>
+      </div>
+      <div class="f">
+        <span class="ic">🔐</span>
+        <h3>Locked when you want it</h3>
+        <p>Optional master password encrypts the vault at rest. The unlocked key lives in session memory and dies with the browser.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="privacy" class="wrap">
+    <div class="split">
+      <div>
+        <h2>Your data never has to travel</h2>
+        <p style="color:var(--muted); font-size:17px; margin:0;">
+          Every feature works with the network unplugged. That's not a marketing angle —
+          it's the reason the architecture has no server in it.
+        </p>
+        <ul class="ticks">
+          <li><strong>Local storage only.</strong> Profile and settings sit in your browser's IndexedDB.</li>
+          <li><strong>Encrypted at rest.</strong> AES-GCM, key derived from your master password with PBKDF2.</li>
+          <li><strong>On-device AI.</strong> Prompts and CV fragments are processed by the browser's own model.</li>
+          <li><strong>You approve everything.</strong> Imports and captures show a field-by-field diff.</li>
+          <li><strong>Auditable.</strong> MIT licensed — read the code instead of trusting a promise.</li>
+        </ul>
+        <p style="margin-top:24px"><a href="privacy.html">Full privacy policy →</a></p>
+      </div>
+      <img src="assets/options.png" alt="Formless settings: profiles, imports, site whitelist, encryption and backup" />
+    </div>
+  </section>
+
+  <section class="wrap" style="padding-top:0">
+    <div class="wont">
+      <h3>What Formless won't do</h3>
+      <p><strong>It won't submit forms for you.</strong> It fills and drafts; you read it over and hit send. Applications sent by a robot read like they were sent by a robot.</p>
+      <p><strong>It won't touch CAPTCHAs or bot detection.</strong> No circumvention, on purpose.</p>
+      <p><strong>It won't ask for your API key.</strong> Holding credentials would turn a zero-network extension into one that phones out. The on-device model costs you nothing and leaks nothing.</p>
+    </div>
+  </section>
+
+  <section id="install" class="wrap">
+    <div class="sec-head">
+      <h2>Install it</h2>
+      <p>Not in the Chrome Web Store yet — the submission is in review-prep. Building from source takes a minute.</p>
+    </div>
+    <div class="install">
+      <pre><span class="c"># clone, install, build</span>
+git clone https://github.com/itchernetski/formless.git
+cd formless
+npm install
+npm run build</pre>
+      <p style="margin:0; color:var(--muted)">
+        Then open <code class="k">chrome://extensions</code>, turn on <strong>Developer mode</strong>,
+        click <strong>Load unpacked</strong> and pick <code class="k">extension/dist</code>.
+      </p>
+      <p style="margin:14px 0 0; color:var(--muted); font-size:14px">
+        Works in Chrome, Edge, Brave and other Chromium browsers. AI drafting additionally needs a
+        Chrome build with Built-in AI available — everything else works without it.
+      </p>
+      <div class="cta" style="margin-top:22px">
+        <a class="btn primary" href="https://github.com/itchernetski/formless">Get it on GitHub</a>
+        <a class="btn" href="https://github.com/itchernetski/formless/releases">Download a release zip</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap" style="padding-top:0">
+    <div class="sec-head"><h2>Questions people actually ask</h2></div>
+
+    <details class="faq" open>
+      <summary>Isn't this what my password manager does?</summary>
+      <p>Password managers fill credentials and card details. Formless fills the <em>application</em> — employment history, education, custom questions — and writes the free-text answers. It's not a password manager, and you shouldn't put passwords in it.</p>
+    </details>
+    <details class="faq">
+      <summary>Is the on-device model good enough for a real cover letter?</summary>
+      <p>It writes a solid first draft grounded in your CV and the actual posting, and the panel makes you edit before inserting. It is not a frontier model. A paid tier using a hosted model is on the roadmap for people who want that — the local version isn't a trial for it.</p>
+    </details>
+    <details class="faq">
+      <summary>What if I forget my master password?</summary>
+      <p>The data is unrecoverable. The key is derived from the password and stored nowhere. Keep a JSON export from Settings → Backup somewhere safe.</p>
+    </details>
+    <details class="faq">
+      <summary>Does it work on Workday and other awful ATS platforms?</summary>
+      <p>Often, but coverage grows case by case. If a form fills wrongly, open an issue with the URL — those reports are the single most useful contribution to the project.</p>
+    </details>
+    <details class="faq">
+      <summary>Firefox? Safari?</summary>
+      <p>A Firefox build is generated but not yet verified on Gecko — help welcome. Safari would need a separate Xcode wrapper and isn't planned.</p>
+    </details>
+    <details class="faq">
+      <summary>How will this stay free?</summary>
+      <p>The local tier costs nothing to run, because it runs on your machine. Later there may be an optional subscription for hosted-model drafting and encrypted sync. The local tier keeps working, unmetered, with no network access.</p>
+    </details>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Formless · MIT licensed · © 2026 Ilya Chernetskiy</span>
+    <nav>
+      <a href="https://github.com/itchernetski/formless">GitHub</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="https://github.com/itchernetski/formless/issues">Report a site</a>
+      <a href="https://github.com/itchernetski/formless/blob/main/CONTRIBUTING.md">Contribute</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

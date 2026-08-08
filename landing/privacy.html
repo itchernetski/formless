@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Privacy Policy — Formless</title>
+<meta name="description" content="Formless makes no network requests. No server, no account, no analytics. Everything stays in your browser." />
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml" />
+<style>
+  :root { --fg:#111827; --muted:#5b6472; --border:#e5e7eb; --accent:#2563eb; --wash:#f7f8fa; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    color: var(--fg); line-height: 1.65; -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); }
+  header { border-bottom: 1px solid var(--border); }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 0 24px; }
+  header .wrap { display: flex; align-items: center; height: 64px; gap: 10px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; text-decoration: none; color: var(--fg); }
+  .brand img { width: 26px; height: 26px; border-radius: 6px; }
+  main { padding: 56px 0 80px; }
+  h1 { font-size: clamp(30px, 5vw, 42px); letter-spacing: -1.4px; margin: 0 0 6px; font-weight: 800; }
+  .updated { color: var(--muted); font-size: 14px; margin: 0 0 36px; }
+  h2 { font-size: 21px; letter-spacing: -.4px; margin: 44px 0 12px; }
+  h3 { font-size: 16px; margin: 28px 0 8px; }
+  p, li { color: #2c3440; }
+  .callout { background: var(--wash); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 10px; padding: 20px 22px; margin: 0 0 8px; }
+  .callout p { margin: 0 0 10px; }
+  .callout p:last-child { margin: 0; }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 15px; }
+  th, td { text-align: left; padding: 11px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { font-size: 13px; text-transform: uppercase; letter-spacing: .4px; color: var(--muted); }
+  code { background: var(--wash); border: 1px solid var(--border); border-radius: 5px; padding: 1px 6px; font-size: 13.5px; }
+  ul { padding-left: 22px; }
+  li { margin-bottom: 7px; }
+  footer { border-top: 1px solid var(--border); padding: 32px 0; color: var(--muted); font-size: 14px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="brand" href="index.html"><img src="assets/icon.svg" alt="" /> Formless</a>
+  </div>
+</header>
+
+<main class="wrap">
+  <h1>Privacy Policy</h1>
+  <p class="updated">Last updated 8 August 2026 · Applies to Formless browser extension 0.1.x</p>
+
+  <div class="callout">
+    <p><strong>The short version.</strong> Formless makes no network requests. It has no server, no account system, no analytics, and no telemetry. Everything you put into it stays in your browser, on your device.</p>
+    <p>There is no data for us to collect, sell, share, or lose, because none of it ever reaches us.</p>
+  </div>
+
+  <h2>What Formless stores, and where</h2>
+  <p>All of it lives in your browser's local storage (IndexedDB and <code>chrome.storage</code>), on the device where you installed the extension.</p>
+  <table>
+    <tr><th>Data</th><th>Purpose</th></tr>
+    <tr><td>Profile fields — name, contact details, address, work and education history, custom fields</td><td>Filling forms and drafting text</td></tr>
+    <tr><td>Settings — on/off state, site whitelist, active profile, encryption metadata (salt and verification blob)</td><td>Making the extension behave as you configured it</td></tr>
+    <tr><td>Unlocked encryption key, when encryption is enabled</td><td>Held in <code>chrome.storage.session</code> only; discarded when the browser closes</td></tr>
+  </table>
+  <p>If you enable encryption, profile records are stored as AES-GCM ciphertext, with the key derived from your master password (PBKDF2, 210,000 iterations, SHA-256). The password itself is never stored. If you lose it, the data cannot be recovered — not by us, not by anyone.</p>
+
+  <h2>What Formless reads while you browse</h2>
+  <p>To find and fill forms, the content script reads the structure of pages you use it on: field names, labels, <code>autocomplete</code> attributes, placeholders, and for AI drafting, visible page text such as a job title and description.</p>
+  <p>This reading happens locally, in the moment, to compute what to fill or draft. It is not stored, logged, or transmitted. If you restrict the site whitelist in Settings, the extension won't act outside it.</p>
+
+  <h2>AI generation</h2>
+  <p>Drafting uses the AI model built into your browser (Chrome's Gemini Nano). Your prompt — page context plus the relevant parts of your profile — is processed by that on-device model. No API key, no request to us, no request to Google, Anthropic, OpenAI or anyone else. If the model isn't available, the feature reports that and does nothing.</p>
+
+  <h2>Saving what you type</h2>
+  <p>When you click <em>Save filled fields to profile</em>, Formless reads the values currently in the form and proposes profile updates, which you approve field by field. Fields recognised as sensitive — passwords, card numbers, CVV, OTP, PIN, SSN — are excluded before the proposal is built, and never enter the profile through this path.</p>
+
+  <h2>What Formless never does</h2>
+  <ul>
+    <li>Send any data off your device</li>
+    <li>Submit forms on your behalf</li>
+    <li>Solve or circumvent CAPTCHAs or bot detection</li>
+    <li>Load remote code, remote fonts, or remote configuration</li>
+    <li>Include analytics, crash reporting, A/B testing, or usage counters</li>
+    <li>Create an account or identifier for you</li>
+  </ul>
+
+  <h2>Permissions</h2>
+  <table>
+    <tr><th>Permission</th><th>Why it's needed</th></tr>
+    <tr><td><code>storage</code></td><td>Keep your profile and settings on the device</td></tr>
+    <tr><td><code>activeTab</code></td><td>Know which page you clicked the icon on</td></tr>
+    <tr><td>Content script on <code>http://*/*</code> and <code>https://*/*</code></td><td>Detect and fill forms on the page you're using. Narrow this with the site whitelist.</td></tr>
+  </table>
+  <p>Formless requests no permission to contact remote hosts, because it doesn't contact any.</p>
+
+  <h2>Your data, your control</h2>
+  <ul>
+    <li><strong>See it</strong> — Settings shows every stored field.</li>
+    <li><strong>Change it</strong> — edit or delete any field, or delete a whole profile.</li>
+    <li><strong>Back it up</strong> — Settings → Backup exports plain JSON. It is unencrypted by design so it stays readable; store it somewhere safe.</li>
+    <li><strong>Erase it</strong> — removing the extension from your browser deletes its storage. Nothing survives elsewhere.</li>
+  </ul>
+
+  <h2>Children</h2>
+  <p>Formless isn't directed at children under 13 and collects nothing from anyone, including them.</p>
+
+  <h2>Third parties</h2>
+  <p>There are none. No processors, no sub-processors, no SDKs phoning home. Dependencies are bundled at build time and listed in the repository, where you can audit them.</p>
+
+  <h2>If this ever changes</h2>
+  <p>A future optional paid tier may send page context and selected profile fields to a server in order to generate text with a hosted model. That would be strictly opt-in, off by default, and documented here before it ships — and the local tier will keep working with no network access. Any such change will be announced in the changelog with a new date above.</p>
+
+  <h2>Contact</h2>
+  <p>Questions: <a href="mailto:privacy@tchernetski.com">privacy@tchernetski.com</a>. Security issues: see <a href="https://github.com/itchernetski/formless/blob/main/SECURITY.md">SECURITY.md</a>.</p>
+</main>
+
+<footer>
+  <div class="wrap">
+    <a href="index.html">← Back to Formless</a> · MIT licensed · © 2026 Ilya Chernetskiy
+  </div>
+</footer>
+
+</body>
+</html>

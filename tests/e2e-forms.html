@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Autofill E2E forms</title>
+  </head>
+  <body>
+    <h1>E2E test forms</h1>
+
+    <form id="job">
+      <h2>Job application</h2>
+      <input autocomplete="given-name" name="first" />
+      <input autocomplete="family-name" name="last" />
+      <input type="email" name="email" />
+      <input name="phone" />
+      <label for="co">Company</label><input id="co" name="employer" />
+      <input name="job-title" placeholder="Job title" />
+      <select name="country">
+        <option value="">—</option>
+        <option value="FR">France</option>
+        <option value="ES">Spain</option>
+      </select>
+    </form>
+
+    <form id="checkout">
+      <h2>Checkout</h2>
+      <input name="address-line1" />
+      <input name="city" />
+      <input name="zip" />
+      <input name="captcha" placeholder="Type the code" />
+    </form>
+  </body>
+</html>

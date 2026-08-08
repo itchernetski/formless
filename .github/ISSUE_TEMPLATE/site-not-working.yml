@@ -1,0 +1,68 @@
+name: Site not working
+description: A form is mis-filled, skipped, or detected wrongly on a specific site.
+title: "[site] "
+labels: ["detection", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This is the most useful kind of report — field detection improves case by case.
+
+        **Please scrub your personal data** from any HTML or screenshots you attach.
+  - type: input
+    id: url
+    attributes:
+      label: URL or platform
+      description: The page with the form. If it's behind a login, name the platform (Greenhouse, Lever, Workday, Ashby, …).
+      placeholder: https://boards.greenhouse.io/acme/jobs/1234
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What went wrong
+      description: Which fields were wrong, missed, or filled with the wrong value?
+      placeholder: |
+        - "Phone" got my postal code
+        - The "City" field was skipped entirely
+        - Nothing at all was filled
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+      validations:
+        required: true
+  - type: textarea
+    id: form-html
+    attributes:
+      label: Form HTML (optional, very helpful)
+      description: |
+        DevTools → right-click the `<form>` → Copy → Copy outerHTML. This becomes a regression fixture.
+        Replace real names, emails, addresses and phone numbers with placeholders first.
+      render: html
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and version
+      placeholder: Chrome 141 on macOS 15
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Formless version
+      description: From chrome://extensions
+      placeholder: 0.1.0
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: The form was fully visible on screen when I clicked Fill.
+          required: true
+        - label: I removed my personal data from anything I pasted above.
+          required: true

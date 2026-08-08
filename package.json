@@ -1,0 +1,22 @@
+{
+  "name": "formless",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Formless — privacy-first form autofill browser extension. Repo root; the extension lives in extension/.",
+  "license": "MIT",
+  "author": "Ilya Chernetskiy",
+  "type": "module",
+  "scripts": {
+    "postinstall": "npm --prefix extension install",
+    "dev": "npm --prefix extension run dev",
+    "build": "npm --prefix extension run build",
+    "lint": "npm --prefix extension run lint",
+    "typecheck": "npm --prefix extension run typecheck",
+    "test": "npm --prefix extension test",
+    "package": "npm --prefix extension run build && node scripts/package.mjs",
+    "e2e": "node tests/e2e-extension.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.61.1"
+  }
+}

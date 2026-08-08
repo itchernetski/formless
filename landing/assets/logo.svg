@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 96" width="420" height="96">
+  <!-- Formless horizontal lockup: mark + wordmark -->
+  <rect x="8" y="8" width="80" height="80" rx="18" fill="#2563eb"/>
+  <g fill="#ffffff" transform="translate(8 8) scale(0.625)">
+    <rect x="26" y="40" width="76" height="13" rx="6.5"/>
+    <rect x="26" y="66" width="47" height="13" rx="6.5"/>
+    <path d="M92 62 q3.2 12.8 16 16 q-12.8 3.2 -16 16 q-3.2 -12.8 -16 -16 q12.8 -3.2 16 -16 z"/>
+  </g>
+  <text x="106" y="62" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif"
+        font-size="44" font-weight="700" letter-spacing="-1.2" fill="#111827">Formless</text>
+</svg>
