@@ -27,8 +27,10 @@ export function clearHighlight(entries: FilledEntry[]): void {
 export function showToast(filled: number, onUndo: () => void): void {
   removeToast();
   const host = document.createElement("div");
+  // `all:initial` first — see the note in gen-panel.ts; declared last it resets
+  // the positioning above it and the toast drops to the bottom of the document.
   host.style.cssText =
-    "position:fixed;z-index:2147483647;bottom:20px;right:20px;all:initial;";
+    "all:initial;position:fixed;z-index:2147483647;bottom:20px;right:20px;";
   const root = host.attachShadow({ mode: "open" });
   root.innerHTML = `
     <style>

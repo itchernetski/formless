@@ -42,8 +42,11 @@ export interface GenPanelArgs {
 export function openGenPanel({ profile, context, fields }: GenPanelArgs): void {
   closeGenPanel();
   host = document.createElement("div");
+  // `all:initial` must come FIRST: it resets every property, so anything
+  // declared before it (position, top, right, z-index) is wiped and the panel
+  // lands as a static block at the end of the document instead of floating.
   host.style.cssText =
-    "position:fixed;z-index:2147483647;top:24px;right:24px;all:initial;";
+    "all:initial;position:fixed;z-index:2147483647;top:24px;right:24px;";
   const root = host.attachShadow({ mode: "open" });
 
   const fieldOptions = fields

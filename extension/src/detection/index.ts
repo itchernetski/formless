@@ -4,6 +4,7 @@
 
 import { getPath, type Profile } from "../vault/schema";
 import { fillField, isFillable, type Fillable } from "./fill";
+import { isLongFormTarget } from "./longfields";
 import { mapField } from "./mapping";
 
 export interface FilledEntry {
@@ -46,6 +47,10 @@ export function autofill(profile: Profile, doc: Document = document): FillReport
   const entries: FilledEntry[] = [];
 
   for (const el of candidates as Fillable[]) {
+    // Cover letters, bios and "why this company" belong to the AI panel. Without
+    // this, a textarea named `why_company` scores as work.company and gets the
+    // employer name pasted into it.
+    if (isLongFormTarget(el)) continue;
     const mapping = mapField(el);
     if (!mapping) continue;
     const value = getPath(profile, mapping.path);

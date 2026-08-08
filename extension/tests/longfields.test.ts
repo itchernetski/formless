@@ -37,6 +37,27 @@ describe("collectLongFields", () => {
     expect(kinds).toContain("whyCompany");
   });
 
+  it("labels fields for humans, not with the raw signal soup", () => {
+    // The picker used to show "why_company why_company Why do you want to…"
+    // because the classification string doubled as the caption.
+    const d = doc(`
+      <label for="why_company">Why do you want to work at Lumen Systems? *</label>
+      <textarea id="why_company" name="why_company"></textarea>`);
+    expect(collectLongFields(d)[0].label).toBe("Why do you want to work at Lumen Systems?");
+  });
+
+  it("falls back to aria-label, placeholder, then name", () => {
+    const d = doc(`
+      <textarea aria-label="Cover letter"></textarea>
+      <textarea placeholder="Tell us about yourself"></textarea>
+      <textarea name="why_join_us"></textarea>`);
+    expect(collectLongFields(d).map((f) => f.label)).toEqual([
+      "Cover letter",
+      "Tell us about yourself",
+      "why_join_us",
+    ]);
+  });
+
   it("skips disabled and readonly textareas", () => {
     const d = doc(`<textarea disabled></textarea><textarea readonly></textarea><textarea></textarea>`);
     expect(collectLongFields(d)).toHaveLength(1);

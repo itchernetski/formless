@@ -9,7 +9,7 @@ export type LongFieldKind = GenType | "generic";
 export interface LongField {
   el: HTMLTextAreaElement | HTMLElement; // textarea or contenteditable host
   kind: LongFieldKind;
-  label: string;
+  label: string; // human-readable, for the panel's field picker
 }
 
 // Ordered most-specific first so "why this company" beats a generic "cover letter".
@@ -29,6 +29,8 @@ function isContentEditable(el: Element): el is HTMLElement {
   return h.isContentEditable === true || h.getAttribute?.("contenteditable") === "true";
 }
 
+// Everything that hints at what the field wants, concatenated for matching.
+// Deliberately noisy — good for classification, unreadable as a caption.
 function signalsFor(el: Element): string {
   return [
     el.getAttribute("name") ?? "",
@@ -41,17 +43,37 @@ function signalsFor(el: Element): string {
     .trim();
 }
 
+// The one signal a human would call the field's name, cleaned up for display in
+// the panel's field picker. Falls back down the list when the page is sparse.
+function displayLabel(el: Element): string {
+  const candidate =
+    labelText(el) ||
+    el.getAttribute("aria-label") ||
+    el.getAttribute("placeholder") ||
+    el.getAttribute("name") ||
+    "";
+  // Collapse whitespace and drop the required-marker punctuation labels carry.
+  return candidate.replace(/\s+/g, " ").replace(/[\s*:]+$/, "").trim();
+}
+
+// True when a field is a target for AI generation rather than a profile value.
+// Autofill consults this so a textarea whose id merely contains "company" isn't
+// stuffed with the user's employer name.
+export function isLongFormTarget(el: Element): boolean {
+  if (!(el instanceof HTMLTextAreaElement) && !isContentEditable(el)) return false;
+  return classifyLongField(signalsFor(el)) !== "generic";
+}
+
 function collect(root: Document | ShadowRoot, out: LongField[]): void {
   const nodes = root.querySelectorAll("textarea, [contenteditable]");
   for (const node of nodes) {
     const isTextarea = node instanceof HTMLTextAreaElement;
     if (!isTextarea && !isContentEditable(node)) continue;
     if (isTextarea && (node.disabled || node.readOnly)) continue;
-    const label = signalsFor(node);
     out.push({
       el: node as HTMLTextAreaElement | HTMLElement,
-      kind: classifyLongField(label),
-      label,
+      kind: classifyLongField(signalsFor(node)),
+      label: displayLabel(node),
     });
   }
   // Descend into open shadow roots, matching the detection engine's traversal.

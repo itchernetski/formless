@@ -15,6 +15,30 @@ function profile(): Profile {
   return p;
 }
 
+describe("long-form fields are left to the AI panel", () => {
+  it("does not fill a textarea whose name matches a profile token", () => {
+    // Regression: `why_company` scored as work.company and got the employer
+    // name pasted into a field meant for a written answer.
+    document.body.innerHTML = `
+      <label for="why_company">Why do you want to work at Lumen Systems?</label>
+      <textarea id="why_company" name="why_company"></textarea>`;
+    const el = document.querySelector("textarea")!;
+    autofill(profile(), document);
+    expect(el.value).toBe("");
+  });
+
+  it("still fills a generic textarea that maps to a profile field", () => {
+    document.body.innerHTML = `
+      <label for="addr">Street address</label>
+      <textarea id="addr" name="address"></textarea>`;
+    const el = document.querySelector("textarea")!;
+    const p = profile();
+    p.address.line1 = "Carrer de Colom 12";
+    autofill(p, document);
+    expect(el.value).toBe("Carrer de Colom 12");
+  });
+});
+
 describe("fillField", () => {
   it("fills text inputs", () => {
     document.body.innerHTML = `<input name="email">`;
