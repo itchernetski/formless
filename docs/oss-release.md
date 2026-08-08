@@ -22,7 +22,7 @@ Still to decide: the contact addresses used across the docs, and either set them
 | `security@tchernetski.com` | `SECURITY.md` |
 | `privacy@tchernetski.com` | `PRIVACY.md`, `landing/privacy.html` |
 | `conduct@tchernetski.com` | `CODE_OF_CONDUCT.md` |
-| `support@tchernetski.com` | store listing |
+| `tchernetski@gmail.com` | store listing (support contact) |
 
 ## 2. Create the repo and push
 

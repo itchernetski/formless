@@ -36,21 +36,18 @@ Do this **before** the first submission. Reducing permissions in an update is fi
 
 Chrome will not accept a link to a file inside a GitHub repo as a privacy policy. It needs a real, public, stable URL.
 
-`landing/privacy.html` exists for exactly this. Cheapest options:
+`landing/privacy.html` exists for exactly this, and **GitHub Pages serves it** — `.github/workflows/pages.yml` deploys `landing/` on every push that touches it. → `https://itchernetski.github.io/formless/privacy.html`
 
-- **Cloudflare Pages / Netlify** — point at the repo, set the build output directory to `landing`, no build command. Free, custom domain optional. → `https://<project>.pages.dev/privacy.html`
-- **GitHub Pages** — Pages only serves `/` or `/docs` from a branch, and `landing/` is neither. Either copy `landing/` into `docs/` (ugly, since `docs/` is your planning folder), or push `landing/` to a `gh-pages` branch:
-  ```bash
-  git subtree push --prefix landing origin gh-pages
-  ```
-  → `https://itchernetski.github.io/formless/privacy.html`
+The "Pages only serves `/` or `/docs`" limitation applies to the *branch* deploy source. With **Source: GitHub Actions**, `actions/upload-pages-artifact` publishes any directory, so `landing/` needs neither a copy into `docs/` nor a `gh-pages` subtree push. Every path in `landing/` is relative, so the `/formless/` subpath doesn't break the stylesheet, icons or the `index.html` ↔ `privacy.html` links.
+
+One manual step, once: **Settings → Pages → Source: GitHub Actions**. The workflow fails until it's set.
 
 Verify it loads in a private window before pasting it into the dashboard.
 
 ### 0.3 Everything else in the pre-flight
 
 - [ ] Manual walkthrough in a real Chrome — the checklist in [`oss-release.md` §3](oss-release.md). A listing rejected for a broken feature costs days; five minutes of clicking costs five minutes.
-- [ ] `support@tchernetski.com` (or whatever you use) actually receives mail — it becomes the public support contact
+- [x] Support contact is `tchernetski@gmail.com` — a real inbox, and the address to put in the dashboard's contact field
 - [ ] Four composed 1280×800 screenshots — see [§3](#3-graphic-assets)
 - [ ] The GitHub repo is **public**, because the listing links to it and reviewers will open it
 - [x] `npm run package` produces `release/formless-0.1.0-chrome.zip` (plus the edge and firefox zips)

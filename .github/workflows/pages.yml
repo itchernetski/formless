@@ -1,0 +1,42 @@
+name: Pages
+
+# Publishes landing/ to GitHub Pages, which is what gives the privacy policy the
+# stable public URL the Chrome Web Store requires:
+#   https://itchernetski.github.io/formless/privacy.html
+#
+# Uses the Actions-based Pages deploy rather than a gh-pages branch, so no
+# subtree push and no duplicated copy of landing/ in the tree. Requires
+# Settings → Pages → Source: GitHub Actions to be set once, by hand.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "landing/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never cancel a deploy midway; queue instead.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: landing
+      - id: deployment
+        uses: actions/deploy-pages@v4
